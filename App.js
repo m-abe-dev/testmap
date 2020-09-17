@@ -1,4 +1,4 @@
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import React, {useState} from 'react';
 import {View, StyleSheet, Alert} from 'react-native';
 
@@ -15,17 +15,23 @@ export default function App() {
         latitudeDelta: 0.025,
         longitudeDelta: 0.0221,
       }}
-      onPress={(event) => {
-        // setMarkers((current) => [
-        //   ...current,
-        //   {
-        //     lat: event.nativeEvent.coordinate.latitude(),
-        //     lng: event.nativeEvent.coordinate.longitude(),
-        //     time: new Date(),
-        //   },
-        // ]);
-        console.log(event);
-      }}></MapView>
+      onPress={(e) => {
+        setMarkers([
+          ...markers,
+          {
+            lat: e.nativeEvent.coordinate.latitude,
+            lng: e.nativeEvent.coordinate.longitude,
+            time: new Date(),
+          },
+        ]);
+      }}>
+      {markers.map((marker) => (
+        <Marker
+          key={marker.time.toISOString()}
+          coordinate={{latitude: marker.lat, longitude: marker.lng}}
+        />
+      ))}
+    </MapView>
   );
 }
 
