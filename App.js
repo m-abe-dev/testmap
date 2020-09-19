@@ -1,9 +1,25 @@
-import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
-import React, {useState} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
+import React, {useState, useCallback, useRef} from 'react';
+import {View, StyleSheet, Text} from 'react-native';
 
 export default function App() {
   const [markers, setMarkers] = useState([]);
+
+  const onMapPress = useCallback((e) => {
+    setMarkers([
+      ...markers,
+      {
+        lat: e.nativeEvent.coordinate.latitude,
+        lng: e.nativeEvent.coordinate.longitude,
+        time: new Date(),
+      },
+    ]);
+  }, []);
+
+  const mapRef = useRef();
+  const onMapLoad = useCallback((map) => {
+    mapRef.current = map;
+  }, []);
 
   return (
     <MapView
@@ -15,27 +31,40 @@ export default function App() {
         latitudeDelta: 0.025,
         longitudeDelta: 0.0221,
       }}
-      onPress={(e) => {
-        setMarkers([
-          ...markers,
-          {
-            lat: e.nativeEvent.coordinate.latitude,
-            lng: e.nativeEvent.coordinate.longitude,
-            time: new Date(),
-          },
-        ]);
-      }}>
+      onMapReady={onMapLoad}
+      onPress={onMapPress}>
       {markers.map((marker) => (
         <Marker
           key={marker.time.toISOString()}
-          coordinate={{latitude: marker.lat, longitude: marker.lng}}
-        />
+          coordinate={{latitude: marker.lat, longitude: marker.lng}}>
+          <Callout tooltip>
+            <View>
+              <View style={styles.bubble}>
+                <Text style={styles.name}>dangerous area</Text>
+              </View>
+            </View>
+          </Callout>
+        </Marker>
       ))}
     </MapView>
   );
 }
 
 const styles = StyleSheet.create({
+  bubble: {
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    backgroundColor: '#fff',
+    borderRadius: 6,
+    borderColor: '#ccc',
+    borderWidth: 0.5,
+    padding: 15,
+    width: 150,
+  },
+  name: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
   container: {
     ...StyleSheet.absoluteFillObject,
     height: 400,
