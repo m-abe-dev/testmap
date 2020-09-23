@@ -51,6 +51,8 @@ export default function App() {
         ))}
       </MapView>
 
+      {/* 地図検索 */}
+
       <GooglePlacesAutocomplete
         placeholder="Search"
         minLength={2}
@@ -73,6 +75,8 @@ export default function App() {
             color: '#5d5d5d',
             fontSize: 16,
             marginTop: 90,
+            marginLeft: 10,
+            marginRight: 10,
           },
           textInputContainer: {
             backgroundColor: 'rgba(0,0,0,0)',
@@ -88,12 +92,16 @@ export default function App() {
             borderColor: '#dedede',
             shadowColor: '#000',
             marginTop: 80,
+            marginLeft: 10,
+            marginRight: 10,
           },
         }}
       />
     </>
   );
 }
+
+// スタイル
 
 const styles = StyleSheet.create({
   container: {
